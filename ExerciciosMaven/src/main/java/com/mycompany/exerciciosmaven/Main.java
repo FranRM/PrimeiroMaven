@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
+import org.eclipse.jgit.api.AddCommand;
+import org.eclipse.jgit.api.CommitCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Repository;
@@ -28,6 +30,7 @@ public class Main {
     static GitHub gh1;
     static Scanner sc=null;
     static File fich=null;
+    static Repository repository;
     public static void main(String[] args) throws IOException {
        
 //        try{
@@ -50,13 +53,21 @@ public class Main {
 //        System.out.println("Error:"+ex1.getMessage());
 //    }
     FileRepositoryBuilder repositorear = new FileRepositoryBuilder();
-Repository repository = repositorear.setGitDir(new File("C:\\Users\\Femio\\Documents\\NetBeansProjects\\CodigoMaquinaCOD\\ExerciciosMaven\\nueva\\.git"))
-                .readEnvironment() // scan environment GIT_* variables
-                .findGitDir() // scan up the file system tree
-                .setMustExist(true)
-                .build();
-    
-    System.out.println("HolaMundo");
+    repository = repositorear.setGitDir(new File("C:\\Users\\Femio\\Documents\\NetBeansProjects\\CodigoMaquinaCOD\\ExerciciosMaven\\nueva\\.git"))
+                    .readEnvironment() // scan environment GIT_* variables
+                    .findGitDir() // scan up the file system tree
+                    .setMustExist(true)
+                    .build();
+    try{
+    Git git=new Git(repository);
+                AddCommand add=git.add();
+                add.addFilepattern("C:\\Users\\Femio\\Documents\\NetBeansProjects\\CodigoMaquinaCOD\\ExerciciosMaven\\nueva\\.git").call();
+                CommitCommand commit=git.commit();
+                commit.setMessage("Commit de proba").call();
+            }catch(GitAPIException ex){
+                System.out.println("Error:"+ex);
+            }
+        System.out.println("HolaMundo");
     }
     public static void novorep(String repoNombre) throws IOException {
         GHCreateRepositoryBuilder repo = gh1.createRepository(repoNombre);
