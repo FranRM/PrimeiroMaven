@@ -8,13 +8,19 @@ package com.mycompany.exerciciosmaven;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Scanner;
 import org.eclipse.jgit.api.AddCommand;
 import org.eclipse.jgit.api.CommitCommand;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.InitCommand;
+import org.eclipse.jgit.api.PushCommand;
+import org.eclipse.jgit.api.RemoteAddCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.eclipse.jgit.transport.URIish;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.kohsuke.github.GHCreateRepositoryBuilder;
 import org.kohsuke.github.GitHub;
 
@@ -31,42 +37,83 @@ public class Main {
     static Scanner sc=null;
     static File fich=null;
     static Repository repository;
+    static String user,pass;
     public static void main(String[] args) throws IOException {
-       
-//        try{
-//            fich=new File("user.txt");
-//            sc=new Scanner(fich);
-//            
-//            gh1=GitHub.connectUsingPassword(sc.nextLine(),sc.nextLine());
-//            novorep("Primeiro repo Maven");
-//            
-//        }catch(FileNotFoundException fnfe1){
-//            System.out.println("error;"+fnfe1.getMessage());
-//        }
-//        sc.close();
-//    try{
-//        Git.cloneRepository()
-//            .setURI("https://github.com/FranRM/Boletin21.git")
-//            .setDirectory(new File("nueva"))
-//            .call();
-//    }catch(GitAPIException ex1){
-//        System.out.println("Error:"+ex1.getMessage());
-//    }
+       //creacion do repo remoto
+        try{
+            fich=new File("user.txt");
+            sc=new Scanner(fich);
+            user=sc.nextLine();
+            pass=sc.nextLine();
+            gh1=GitHub.connectUsingPassword(user,pass);
+            novorep("Primeiro repo Maven");
+        }catch(FileNotFoundException fnfe1){
+            System.out.println("error;"+fnfe1.getMessage());
+        }
+        sc.close();
+        //clonado do repo secundario.
+    try{
+        Git.cloneRepository()
+            .setURI("https://github.com/FranRM/Boletin21.git")
+            .setDirectory(new File("nueva"))
+            .call();
+    }catch(GitAPIException ex1){
+        System.out.println("Error:"+ex1.getMessage());
+    }
+   
+    //creción do repo local
     FileRepositoryBuilder repositorear = new FileRepositoryBuilder();
     repository = repositorear.setGitDir(new File("C:\\Users\\Femio\\Documents\\NetBeansProjects\\CodigoMaquinaCOD\\ExerciciosMaven\\nueva\\.git"))
-                    .readEnvironment() // scan environment GIT_* variables
-                    .findGitDir() // scan up the file system tree
+                    .readEnvironment()
+                    .findGitDir()
                     .setMustExist(true)
                     .build();
+
+    //add da carpeta
     try{
     Git git=new Git(repository);
                 AddCommand add=git.add();
                 add.addFilepattern("C:\\Users\\Femio\\Documents\\NetBeansProjects\\CodigoMaquinaCOD\\ExerciciosMaven\\nueva\\.git").call();
+  //inicializado do repositorio
+    InitCommand repositorio=new InitCommand();
+        try{
+            repositorio.setDirectory(new File("C:\\Users\\Femio\\Documents\\NetBeansProjects\\CodigoMaquinaCOD\\ExerciciosMaven\\nueva\\.git")).call();
+        }catch(GitAPIException ex){
+            System.out.println("Error:"+ex);
+        }               
+                
                 CommitCommand commit=git.commit();
-                commit.setMessage("Commit de proba").call();
+                commit.setMessage("Commit de pro").call();
             }catch(GitAPIException ex){
                 System.out.println("Error:"+ex);
             }
+    
+        //pusheado
+try{
+            FileRepositoryBuilder repositoryBuilder=new FileRepositoryBuilder();
+            repository=repositoryBuilder.setGitDir(new File("C:\\Users\\Femio\\Documents\\NetBeansProjects\\CodigoMaquinaCOD\\ExerciciosMaven\\nueva\\.git"))
+                    .readEnvironment()
+                    .findGitDir()
+                    .setMustExist(true)
+                    .build();
+            
+            Git git=new Git(repository);
+
+            RemoteAddCommand remoteAddCommand=git.remoteAdd();
+            remoteAddCommand.setName("origin");
+            remoteAddCommand.setUri(new URIish("https://github.com/FranRM/Primeiro-repo-Maven"));
+            remoteAddCommand.call();
+            PushCommand pushCommand=git.push();
+           
+            pushCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(user,pass));
+            
+            pushCommand.call();
+        }catch(URISyntaxException ex){
+            System.out.println("Error: "+ex);
+        }catch(GitAPIException ex){
+            System.out.println("Error: "+ex);
+        }
+    
         System.out.println("HolaMundo");
     }
     public static void novorep(String repoNombre) throws IOException {
@@ -75,5 +122,4 @@ public class Main {
             .create();
         System.out.println("Listo");
     }
-    
 }
