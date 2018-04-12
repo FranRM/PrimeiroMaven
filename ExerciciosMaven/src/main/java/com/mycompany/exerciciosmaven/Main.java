@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.kohsuke.github.GHCreateRepositoryBuilder;
 import org.kohsuke.github.GitHub;
 
@@ -25,18 +27,27 @@ public class Main {
     static Scanner sc=null;
     static File fich=null;
     public static void main(String[] args) throws IOException {
-        System.out.println("HolaMundo");
-        try{
-            fich=new File("user.txt");
-            sc=new Scanner(fich);
-            
-            gh1=GitHub.connectUsingPassword(sc.nextLine(),sc.nextLine());
-            novorep("Primeiro repo Maven");
-            
-        }catch(FileNotFoundException fnfe1){
-            System.out.println("error;"+fnfe1.getMessage());
-        }
-        sc.close();
+       
+//        try{
+//            fich=new File("user.txt");
+//            sc=new Scanner(fich);
+//            
+//            gh1=GitHub.connectUsingPassword(sc.nextLine(),sc.nextLine());
+//            novorep("Primeiro repo Maven");
+//            
+//        }catch(FileNotFoundException fnfe1){
+//            System.out.println("error;"+fnfe1.getMessage());
+//        }
+//        sc.close();
+    try{
+        Git.cloneRepository()
+            .setURI("https://github.com/FranRM/Boletin21.git")
+            .setDirectory(new File("nueva"))
+            .call();
+    }catch(GitAPIException ex1){
+        System.out.println("Error:"+ex1.getMessage());
+    }
+    System.out.println("HolaMundo");
     }
     public static void novorep(String repoNombre) throws IOException {
         GHCreateRepositoryBuilder repo = gh1.createRepository(repoNombre);
