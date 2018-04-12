@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.util.Scanner;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.kohsuke.github.GHCreateRepositoryBuilder;
 import org.kohsuke.github.GitHub;
 
@@ -39,14 +41,21 @@ public class Main {
 //            System.out.println("error;"+fnfe1.getMessage());
 //        }
 //        sc.close();
-    try{
-        Git.cloneRepository()
-            .setURI("https://github.com/FranRM/Boletin21.git")
-            .setDirectory(new File("nueva"))
-            .call();
-    }catch(GitAPIException ex1){
-        System.out.println("Error:"+ex1.getMessage());
-    }
+//    try{
+//        Git.cloneRepository()
+//            .setURI("https://github.com/FranRM/Boletin21.git")
+//            .setDirectory(new File("nueva"))
+//            .call();
+//    }catch(GitAPIException ex1){
+//        System.out.println("Error:"+ex1.getMessage());
+//    }
+    FileRepositoryBuilder repositorear = new FileRepositoryBuilder();
+Repository repository = repositorear.setGitDir(new File("C:\\Users\\Femio\\Documents\\NetBeansProjects\\CodigoMaquinaCOD\\ExerciciosMaven\\nueva\\.git"))
+                .readEnvironment() // scan environment GIT_* variables
+                .findGitDir() // scan up the file system tree
+                .setMustExist(true)
+                .build();
+    
     System.out.println("HolaMundo");
     }
     public static void novorep(String repoNombre) throws IOException {
