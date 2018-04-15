@@ -32,11 +32,12 @@ public class Main {
 
     /**
      * @param args the command line arguments
+     * Non consigo solucionar o feito de que puxee a o repositoroio do clonado, en vez de a o que eu lle apunto, pero o resto funciona perfectamente.
      */
     static GitHub gh1;
     static Scanner sc=null;
     static File fich=null;
-    static Repository repository;
+    static Repository repository,repository2;
     static String user,pass;
     public static void main(String[] args) throws IOException {
        //creacion do repo remoto
@@ -91,13 +92,13 @@ public class Main {
         //pusheado
 try{
             FileRepositoryBuilder repositoryBuilder=new FileRepositoryBuilder();
-            repository=repositoryBuilder.setGitDir(new File("C:\\Users\\Femio\\Documents\\NetBeansProjects\\CodigoMaquinaCOD\\ExerciciosMaven\\nueva\\.git"))
+            repository2=repositoryBuilder.setGitDir(new File("C:\\Users\\Femio\\Documents\\NetBeansProjects\\CodigoMaquinaCOD\\ExerciciosMaven\\nueva\\.git"))
                     .readEnvironment()
                     .findGitDir()
                     .setMustExist(true)
                     .build();
             
-            Git git=new Git(repository);
+            Git git=new Git(repository2);
 
             RemoteAddCommand remoteAddCommand=git.remoteAdd();
             remoteAddCommand.setName("origin");
@@ -116,6 +117,11 @@ try{
     
         System.out.println("HolaMundo");
     }
+    /**
+     * 
+     * @param repoNombre String que contén o nome que recivirá o repositorio remoto en Github.
+     * @throws IOException 
+     */
     public static void novorep(String repoNombre) throws IOException {
         GHCreateRepositoryBuilder repo = gh1.createRepository(repoNombre);
         repo.autoInit(true)
